@@ -1,8 +1,12 @@
 import { users, User, InsertUser, freelancerProfiles, FreelancerProfile, InsertFreelancerProfile, clientProfiles, ClientProfile, InsertClientProfile, jobPostings, JobPosting, InsertJobPosting, projects, Project, InsertProject, messages, Message, InsertMessage, reviews, Review, InsertReview } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
+import connectPg from "connect-pg-simple";
+import { db, pool } from "./db";
+import { eq, and, or, desc } from "drizzle-orm";
 
 const MemoryStore = createMemoryStore(session);
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
   // User operations
@@ -342,4 +346,287 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  sessionStore: session.SessionStore;
+
+  constructor() {
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true
+    });
+  }
+
+  // User operations
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createUser(userData: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(userData).returning();
+    return user;
+  }
+
+  async updateUser(id: number, userData: Partial<User>): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set(userData)
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser;
+  }
+
+  // Freelancer profile operations
+  async getFreelancerProfile(userId: number): Promise<FreelancerProfile | undefined> {
+    const [profile] = await db
+      .select()
+      .from(freelancerProfiles)
+      .where(eq(freelancerProfiles.userId, userId));
+    return profile;
+  }
+
+  async createFreelancerProfile(profileData: InsertFreelancerProfile): Promise<FreelancerProfile> {
+    const [profile] = await db
+      .insert(freelancerProfiles)
+      .values({
+        ...profileData,
+        averageRating: 0,
+        totalReviews: 0
+      })
+      .returning();
+    return profile;
+  }
+
+  async updateFreelancerProfile(userId: number, profileData: Partial<FreelancerProfile>): Promise<FreelancerProfile | undefined> {
+    const [updatedProfile] = await db
+      .update(freelancerProfiles)
+      .set(profileData)
+      .where(eq(freelancerProfiles.userId, userId))
+      .returning();
+    return updatedProfile;
+  }
+
+  async getAllFreelancers(): Promise<(User & { profile?: FreelancerProfile })[]> {
+    const freelancerUsers = await db
+      .select()
+      .from(users)
+      .where(eq(users.userType, 'freelancer'));
+    
+    const result: (User & { profile?: FreelancerProfile })[] = [];
+    
+    for (const user of freelancerUsers) {
+      const profile = await this.getFreelancerProfile(user.id);
+      result.push({ ...user, profile });
+    }
+    
+    return result;
+  }
+
+  // Client profile operations
+  async getClientProfile(userId: number): Promise<ClientProfile | undefined> {
+    const [profile] = await db
+      .select()
+      .from(clientProfiles)
+      .where(eq(clientProfiles.userId, userId));
+    return profile;
+  }
+
+  async createClientProfile(profileData: InsertClientProfile): Promise<ClientProfile> {
+    const [profile] = await db
+      .insert(clientProfiles)
+      .values(profileData)
+      .returning();
+    return profile;
+  }
+
+  async updateClientProfile(userId: number, profileData: Partial<ClientProfile>): Promise<ClientProfile | undefined> {
+    const [updatedProfile] = await db
+      .update(clientProfiles)
+      .set(profileData)
+      .where(eq(clientProfiles.userId, userId))
+      .returning();
+    return updatedProfile;
+  }
+
+  // Job posting operations
+  async getJobPosting(id: number): Promise<JobPosting | undefined> {
+    const [jobPosting] = await db
+      .select()
+      .from(jobPostings)
+      .where(eq(jobPostings.id, id));
+    return jobPosting;
+  }
+
+  async createJobPosting(postingData: InsertJobPosting): Promise<JobPosting> {
+    const [jobPosting] = await db
+      .insert(jobPostings)
+      .values(postingData)
+      .returning();
+    return jobPosting;
+  }
+
+  async updateJobPosting(id: number, postingData: Partial<JobPosting>): Promise<JobPosting | undefined> {
+    const [updatedJobPosting] = await db
+      .update(jobPostings)
+      .set(postingData)
+      .where(eq(jobPostings.id, id))
+      .returning();
+    return updatedJobPosting;
+  }
+
+  async getAllJobPostings(): Promise<JobPosting[]> {
+    return db.select().from(jobPostings);
+  }
+
+  async getClientJobPostings(clientId: number): Promise<JobPosting[]> {
+    return db
+      .select()
+      .from(jobPostings)
+      .where(eq(jobPostings.clientId, clientId));
+  }
+
+  // Project operations
+  async getProject(id: number): Promise<Project | undefined> {
+    const [project] = await db
+      .select()
+      .from(projects)
+      .where(eq(projects.id, id));
+    return project;
+  }
+
+  async createProject(projectData: InsertProject): Promise<Project> {
+    const [project] = await db
+      .insert(projects)
+      .values(projectData)
+      .returning();
+    return project;
+  }
+
+  async updateProject(id: number, projectData: Partial<Project>): Promise<Project | undefined> {
+    const [updatedProject] = await db
+      .update(projects)
+      .set(projectData)
+      .where(eq(projects.id, id))
+      .returning();
+    return updatedProject;
+  }
+
+  async getClientProjects(clientId: number): Promise<(Project & { job?: JobPosting })[]> {
+    const clientProjects = await db
+      .select()
+      .from(projects)
+      .where(eq(projects.clientId, clientId));
+    
+    const result: (Project & { job?: JobPosting })[] = [];
+    
+    for (const project of clientProjects) {
+      const job = await this.getJobPosting(project.jobId);
+      result.push({ ...project, job });
+    }
+    
+    return result;
+  }
+
+  async getFreelancerProjects(freelancerId: number): Promise<(Project & { job?: JobPosting })[]> {
+    const freelancerProjects = await db
+      .select()
+      .from(projects)
+      .where(eq(projects.freelancerId, freelancerId));
+    
+    const result: (Project & { job?: JobPosting })[] = [];
+    
+    for (const project of freelancerProjects) {
+      const job = await this.getJobPosting(project.jobId);
+      result.push({ ...project, job });
+    }
+    
+    return result;
+  }
+
+  // Message operations
+  async getMessages(senderId: number, receiverId: number): Promise<Message[]> {
+    return db
+      .select()
+      .from(messages)
+      .where(
+        or(
+          and(
+            eq(messages.senderId, senderId),
+            eq(messages.receiverId, receiverId)
+          ),
+          and(
+            eq(messages.senderId, receiverId),
+            eq(messages.receiverId, senderId)
+          )
+        )
+      )
+      .orderBy(messages.createdAt);
+  }
+
+  async createMessage(messageData: InsertMessage): Promise<Message> {
+    const [message] = await db
+      .insert(messages)
+      .values(messageData)
+      .returning();
+    return message;
+  }
+
+  async markMessageAsRead(id: number): Promise<Message | undefined> {
+    const [updatedMessage] = await db
+      .update(messages)
+      .set({ read: true })
+      .where(eq(messages.id, id))
+      .returning();
+    return updatedMessage;
+  }
+
+  // Review operations
+  async getReview(id: number): Promise<Review | undefined> {
+    const [review] = await db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.id, id));
+    return review;
+  }
+
+  async createReview(reviewData: InsertReview): Promise<Review> {
+    const [review] = await db
+      .insert(reviews)
+      .values(reviewData)
+      .returning();
+    
+    // Update freelancer's average rating
+    const freelancerReviews = await this.getFreelancerReviews(reviewData.freelancerId);
+    if (freelancerReviews.length > 0) {
+      const totalRating = freelancerReviews.reduce((sum, review) => sum + review.rating, 0);
+      const averageRating = totalRating / freelancerReviews.length;
+      
+      await this.updateFreelancerProfile(reviewData.freelancerId, {
+        averageRating,
+        totalReviews: freelancerReviews.length
+      });
+    }
+    
+    return review;
+  }
+
+  async getFreelancerReviews(freelancerId: number): Promise<Review[]> {
+    return db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.freelancerId, freelancerId));
+  }
+}
+
+// Use the DatabaseStorage instead of MemStorage
+export const storage = new DatabaseStorage();

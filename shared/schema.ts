@@ -1,4 +1,5 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json, doublePrecision } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, doublePrecision, primaryKey } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -120,6 +121,95 @@ export const insertReviewSchema = createInsertSchema(reviews).omit({
   id: true,
   createdAt: true,
 });
+
+// Relations
+export const usersRelations = relations(users, ({ many, one }) => ({
+  freelancerProfile: one(freelancerProfiles, {
+    fields: [users.id],
+    references: [freelancerProfiles.userId],
+  }),
+  clientProfile: one(clientProfiles, {
+    fields: [users.id],
+    references: [clientProfiles.userId],
+  }),
+  jobPostings: many(jobPostings),
+  freelancerProjects: many(projects, { relationName: "freelancer" }),
+  clientProjects: many(projects, { relationName: "client" }),
+  sentMessages: many(messages, { relationName: "sender" }),
+  receivedMessages: many(messages, { relationName: "receiver" }),
+  writtenReviews: many(reviews, { relationName: "reviewer" }),
+  receivedReviews: many(reviews, { relationName: "freelancer" }),
+}));
+
+export const freelancerProfilesRelations = relations(freelancerProfiles, ({ one }) => ({
+  user: one(users, {
+    fields: [freelancerProfiles.userId],
+    references: [users.id],
+  }),
+}));
+
+export const clientProfilesRelations = relations(clientProfiles, ({ one }) => ({
+  user: one(users, {
+    fields: [clientProfiles.userId],
+    references: [users.id],
+  }),
+}));
+
+export const jobPostingsRelations = relations(jobPostings, ({ one, many }) => ({
+  client: one(users, {
+    fields: [jobPostings.clientId],
+    references: [users.id],
+  }),
+  projects: many(projects),
+}));
+
+export const projectsRelations = relations(projects, ({ one, many }) => ({
+  job: one(jobPostings, {
+    fields: [projects.jobId],
+    references: [jobPostings.id],
+  }),
+  freelancer: one(users, {
+    fields: [projects.freelancerId],
+    references: [users.id],
+    relationName: "freelancer",
+  }),
+  client: one(users, {
+    fields: [projects.clientId],
+    references: [users.id],
+    relationName: "client",
+  }),
+  reviews: many(reviews),
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  sender: one(users, {
+    fields: [messages.senderId],
+    references: [users.id],
+    relationName: "sender",
+  }),
+  receiver: one(users, {
+    fields: [messages.receiverId],
+    references: [users.id],
+    relationName: "receiver",
+  }),
+}));
+
+export const reviewsRelations = relations(reviews, ({ one }) => ({
+  project: one(projects, {
+    fields: [reviews.projectId],
+    references: [projects.id],
+  }),
+  reviewer: one(users, {
+    fields: [reviews.reviewerId],
+    references: [users.id],
+    relationName: "reviewer",
+  }),
+  freelancer: one(users, {
+    fields: [reviews.freelancerId],
+    references: [users.id],
+    relationName: "freelancer",
+  }),
+}));
 
 // Types for frontend use
 export type InsertUser = z.infer<typeof insertUserSchema>;
