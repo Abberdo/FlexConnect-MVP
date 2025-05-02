@@ -240,7 +240,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Project not found" });
       }
 
-      const user = req.user;
+      const user = req.user as any;
       if (user.id !== project.clientId && user.id !== project.freelancerId) {
         return res.status(403).json({ message: "You do not have permission to update this project" });
       }
@@ -260,7 +260,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const currentUserId = req.user.id;
+      const currentUserId = (req.user as any).id;
       const otherUserId = parseInt(req.params.userId);
       if (isNaN(otherUserId)) {
         return res.status(400).json({ message: "Invalid user ID" });
@@ -279,7 +279,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const sender = req.user;
+      const sender = req.user as any;
 
       // Validate request body
       const result = insertMessageSchema.safeParse({
@@ -324,7 +324,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const user = req.user;
+      const user = req.user as any;
       if (user.userType !== 'client') {
         return res.status(403).json({ message: "Only clients can leave reviews" });
       }
@@ -364,7 +364,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const user = req.user;
+      const user = req.user as any;
       let data: any = { user };
 
       if (user.userType === 'freelancer') {
@@ -379,7 +379,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const matchingJobs = jobs.filter(job => 
           job.status === 'open' && 
           profile?.skills?.some(skill => 
-            job.requiredSkills.includes(skill)
+            job.requiredSkills?.includes(skill) || false
           )
         );
 
@@ -408,7 +408,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const matchingFreelancers = freelancers.filter(freelancer => 
           freelancer.profile?.skills?.some(skill => 
             jobPostings.some(job => 
-              job.requiredSkills.includes(skill)
+              job.requiredSkills?.includes(skill) || false
             )
           )
         );
