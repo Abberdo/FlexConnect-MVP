@@ -6,13 +6,14 @@ export function Footer() {
   
   // Check if sass mode is enabled from localStorage or parent component
   useEffect(() => {
-    const sassEnabled = localStorage.getItem('sass-mode') === 'true';
-    setSassyFooterText(sassEnabled !== null ? sassEnabled : true);
+    const savedSassMode = localStorage.getItem('sass-mode');
+    if (savedSassMode !== null) {
+      setSassyFooterText(savedSassMode === 'true');
+    }
     
     // Listen for sass mode toggle events
     const handleSassToggle = (e: CustomEvent) => {
       setSassyFooterText(e.detail.enabled);
-      localStorage.setItem('sass-mode', e.detail.enabled);
     };
     
     window.addEventListener('sass-mode-toggle' as any, handleSassToggle);

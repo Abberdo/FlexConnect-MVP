@@ -20,32 +20,27 @@ export default function HomePage() {
   const imageTwoY = useTransform(scrollYProgress, [0, 1], [0, -150]);
   const imageThreeY = useTransform(scrollYProgress, [0, 1], [0, 100]);
   
-  // Sync sass mode with localStorage and dispatch event for other components
+  // Load sass mode from localStorage only once at component mount
   useEffect(() => {
     const savedSassMode = localStorage.getItem('sass-mode');
     if (savedSassMode !== null) {
       setSassMode(savedSassMode === 'true');
     }
+  }, []);
+  
+  // Separate effect to handle changes to sassMode
+  useEffect(() => {
+    // Only dispatch events when toggle changes, not on initial load
+    localStorage.setItem('sass-mode', sassMode.toString());
     
     // Dispatch custom event when sass mode changes
-    const handleSassModeChange = (enabled: boolean) => {
-      localStorage.setItem('sass-mode', enabled.toString());
-      window.dispatchEvent(
-        new CustomEvent('sass-mode-toggle', { detail: { enabled } })
-      );
-    };
-    
-    // Set initial value
-    handleSassModeChange(sassMode);
-    
-    // Update when state changes
-    return () => {
-      handleSassModeChange(sassMode);
-    };
+    window.dispatchEvent(
+      new CustomEvent('sass-mode-toggle', { detail: { enabled: sassMode } })
+    );
   }, [sassMode]);
 
   return (
-    <div className="min-h-screen flex flex-col" ref={containerRef}>
+    <div className="min-h-screen flex flex-col relative" ref={containerRef}>
       <Navbar />
       
       <main className="flex-1 relative overflow-hidden">
