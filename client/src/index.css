@@ -72,14 +72,14 @@
   --chart-5: 200 70% 50%; /* Light Blue */
   
   /* Sidebar colors */
-  --sidebar-background: 222 47% 11%;
+  --sidebar-background: 270 60% 15%; /* Dark Purple */
   --sidebar-foreground: 210 40% 98%;
-  --sidebar-primary: 226 74% 68%;
+  --sidebar-primary: 326 73% 60%; /* Pink */
   --sidebar-primary-foreground: 210 40% 98%;
-  --sidebar-accent: 215 20.2% 70.1%;
-  --sidebar-accent-foreground: 222 47% 21%;
-  --sidebar-border: 217.2 32.6% 17.5%;
-  --sidebar-ring: 226 74% 68%;
+  --sidebar-accent: 31 95% 50%; /* Orange */
+  --sidebar-accent-foreground: 210 40% 98%;
+  --sidebar-border: 270 30% 30%; /* Darker Purple */
+  --sidebar-ring: 174 80% 35%; /* Teal */;
 }
 
 @layer base {

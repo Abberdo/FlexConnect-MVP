@@ -1,6 +1,27 @@
 import { Link } from "wouter";
+import { useState, useEffect } from "react";
 
 export function Footer() {
+  const [sassyFooterText, setSassyFooterText] = useState(false);
+  
+  // Check if sass mode is enabled from localStorage or parent component
+  useEffect(() => {
+    const sassEnabled = localStorage.getItem('sass-mode') === 'true';
+    setSassyFooterText(sassEnabled !== null ? sassEnabled : true);
+    
+    // Listen for sass mode toggle events
+    const handleSassToggle = (e: CustomEvent) => {
+      setSassyFooterText(e.detail.enabled);
+      localStorage.setItem('sass-mode', e.detail.enabled);
+    };
+    
+    window.addEventListener('sass-mode-toggle' as any, handleSassToggle);
+    
+    return () => {
+      window.removeEventListener('sass-mode-toggle' as any, handleSassToggle);
+    };
+  }, []);
+
   return (
     <footer className="bg-white">
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
@@ -68,7 +89,12 @@ export function Footer() {
         </div>
         <div className="mt-8 md:mt-0 md:order-1">
           <p className="text-center text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} SASSED, Inc. All rights reserved. Founded by Abigail Desautels.
+            &copy; {new Date().getFullYear()} SASSED, Inc. All rights reserved. 
+            {sassyFooterText ? (
+              <span className="ml-1 text-secondary">Where Savigail makes the rules & doesn't apologize for it. 💅</span>
+            ) : (
+              <span className="ml-1">Founded by Abigail Desautels.</span>
+            )}
           </p>
         </div>
       </div>
