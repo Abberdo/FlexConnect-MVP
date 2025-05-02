@@ -100,7 +100,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const user = req.user;
+      const user = req.user as any;
       if (user.userType !== 'client') {
         return res.status(403).json({ message: "Only clients can post jobs" });
       }
@@ -161,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const user = req.user;
+      const user = req.user as any;
       if (user.userType !== 'client') {
         return res.status(403).json({ message: "Only clients can create projects" });
       }

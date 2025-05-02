@@ -52,7 +52,7 @@ export interface IStorage {
   getFreelancerReviews(freelancerId: number): Promise<Review[]>;
   
   // Session store for authentication
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using any type to avoid SessionStore type issues
 }
 
 export class MemStorage implements IStorage {
@@ -72,7 +72,7 @@ export class MemStorage implements IStorage {
   private messageIdCounter: number;
   private reviewIdCounter: number;
   
-  sessionStore: session.SessionStore;
+  sessionStore: any;
 
   constructor() {
     this.usersMap = new Map();
@@ -347,7 +347,7 @@ export class MemStorage implements IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  sessionStore: session.SessionStore;
+  sessionStore: any;
 
   constructor() {
     this.sessionStore = new PostgresSessionStore({
