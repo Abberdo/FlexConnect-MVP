@@ -96,9 +96,11 @@ export default function AuthPage() {
       <div className="flex flex-col justify-center w-full px-4 sm:px-6 lg:px-8 lg:w-1/2 xl:px-20">
         <div className="mx-auto w-full max-w-sm sm:max-w-md">
           <div className="mb-6 flex justify-center">
-            <div className="h-10 w-10 rounded-md bg-primary flex items-center justify-center">
-              <span className="text-white font-bold text-lg">S</span>
-            </div>
+            <img 
+              src="/assets/brand-logo.jpeg" 
+              alt="SASSED Logo" 
+              className="h-16 w-auto object-contain"
+            />
           </div>
           
           <Tabs defaultValue="login" value={activeTab} onValueChange={(value) => setActiveTab(value as "login" | "register")}>

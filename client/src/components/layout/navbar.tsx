@@ -51,9 +51,11 @@ export function Navbar() {
             <div className="flex-shrink-0 flex items-center">
               <Link to="/">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">S</span>
-                  </div>
+                  <img 
+                    src="/assets/brand-logo.jpeg" 
+                    alt="SASSED Logo" 
+                    className="h-10 w-auto object-contain"
+                  />
                   <span className="text-foreground font-semibold text-xl">SASSED</span>
                 </div>
               </Link>

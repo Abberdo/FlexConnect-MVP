@@ -26,6 +26,14 @@ export function Footer() {
   return (
     <footer className="bg-white">
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
+        <div className="flex items-center justify-center mb-4 md:mb-0 md:order-1">
+          <img 
+            src="/assets/brand-logo.jpeg" 
+            alt="SASSED Logo" 
+            className="h-8 w-auto object-contain mr-2" 
+          />
+          <span className="text-foreground font-semibold">SASSED</span>
+        </div>
         <div className="flex justify-center space-x-6 md:order-2">
           <a 
             href="https://facebook.com" 
