@@ -8,9 +8,11 @@ import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { TopMatches } from "@/components/dashboard/top-matches";
 import { ActiveProjects } from "@/components/dashboard/active-projects";
 import { JobRecommendations } from "@/components/dashboard/job-recommendations";
-import { Users, Briefcase, CheckCircle, Star } from "lucide-react";
+import { Users, Briefcase, CheckCircle, Star, HelpCircle } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { DashboardTutorial, TutorialTrigger } from "@/components/onboarding/dashboard-tutorial";
+import { useEffect } from "react";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -158,7 +160,7 @@ export default function DashboardPage() {
       <Navbar />
       
       <main className="flex-1 py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-tutorial="dashboard-overview">
           {/* Welcome section */}
           <div className="md:flex md:items-center md:justify-between mb-8">
             <div className="min-w-0 flex-1">
@@ -167,15 +169,19 @@ export default function DashboardPage() {
               </h2>
               <p className="mt-1 text-muted-foreground">Here's your freelancer connect dashboard</p>
             </div>
-            <div className="mt-4 flex md:mt-0">
+            <div className="mt-4 flex items-center gap-3 md:mt-0">
+              <TutorialTrigger label="Dashboard Tour" />
               <Button>
                 Create Job Posting
               </Button>
             </div>
           </div>
+          
+          {/* Dashboard tutorial component */}
+          <DashboardTutorial />
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8" data-tutorial="stats-cards">
             <StatCard 
               icon={Users} 
               title="Total Matches" 
@@ -204,14 +210,22 @@ export default function DashboardPage() {
 
           {/* Activity & Matches */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <ActivityFeed activities={activities} className="lg:col-span-2" />
-            <TopMatches freelancers={topFreelancers} />
+            <div data-tutorial="activity-feed" className="lg:col-span-2">
+              <ActivityFeed activities={activities as any} className="h-full" />
+            </div>
+            <div data-tutorial="recommendation-engine">
+              <TopMatches freelancers={topFreelancers} />
+            </div>
           </div>
 
           {/* Active Projects & Job Recommendations */}
           <div className="grid grid-cols-1 gap-8">
-            <ActiveProjects projects={activeProjects} />
-            <JobRecommendations jobs={jobRecommendations} />
+            <div data-tutorial="active-projects">
+              <ActiveProjects projects={activeProjects} />
+            </div>
+            <div data-tutorial="job-listings">
+              <JobRecommendations jobs={jobRecommendations} />
+            </div>
           </div>
         </div>
       </main>

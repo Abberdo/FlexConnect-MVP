@@ -62,7 +62,7 @@ export function Navbar() {
             </div>
             
             {user && (
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <div className="hidden sm:ml-6 sm:flex sm:space-x-8" data-tutorial="navigation">
                 {navLinks.map((link) => (
                   <Link 
                     key={link.name} 
@@ -72,6 +72,7 @@ export function Navbar() {
                         ? "border-primary text-foreground"
                         : "border-transparent text-muted-foreground hover:border-gray-300 hover:text-foreground"
                     } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
+                    data-tutorial={`nav-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
                   >
                     {link.name}
                   </Link>

@@ -96,7 +96,30 @@ export function Footer() {
             </svg>
           </a>
         </div>
-        <div className="mt-8 md:mt-0 md:order-1">
+        <div className="mt-8 md:mt-0 md:order-1 flex flex-col items-center gap-2">
+          <div 
+            data-tutorial="sass-toggle" 
+            className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+            onClick={() => {
+              const newSassMode = !sassyFooterText;
+              setSassyFooterText(newSassMode);
+              localStorage.setItem('sass-mode', newSassMode.toString());
+              
+              // Dispatch an event that can be listened to by other components
+              const event = new CustomEvent('sass-mode-toggle', { 
+                detail: { enabled: newSassMode } 
+              });
+              window.dispatchEvent(event);
+            }}
+          >
+            <div className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${sassyFooterText ? 'bg-secondary' : 'bg-muted'}`}>
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${sassyFooterText ? 'translate-x-6' : 'translate-x-1'}`} />
+            </div>
+            <span className="text-sm font-medium">
+              {sassyFooterText ? "Savigail Sass Mode: On" : "Savigail Sass Mode: Off"}
+            </span>
+          </div>
+          
           <p className="text-center text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} SASSED, Inc. All rights reserved. 
             {sassyFooterText ? (

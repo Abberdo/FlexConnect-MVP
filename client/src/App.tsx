@@ -9,6 +9,8 @@ import AuthPage from "@/pages/auth-page";
 import { ProtectedRoute } from "@/lib/protected-route";
 import DashboardPage from "@/pages/dashboard-page";
 import HomePage from "@/pages/home-page";
+import { OnboardingProvider } from "@/components/onboarding/onboarding-provider";
+import { WelcomeTutorial } from "@/components/onboarding/welcome-tutorial";
 
 function Router() {
   return (
@@ -25,10 +27,13 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <OnboardingProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+            <WelcomeTutorial />
+          </TooltipProvider>
+        </OnboardingProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
