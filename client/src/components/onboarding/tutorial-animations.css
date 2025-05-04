@@ -1,0 +1,162 @@
+/* Base styling for our custom tooltips */
+.custom-animated-tooltip {
+  --tooltip-bg: #ffffff;
+  --tooltip-text: #333;
+  --tooltip-accent: var(--primary);
+  --tooltip-highlight: var(--secondary);
+  
+  animation: tooltip-appear 0.3s ease-out forwards;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.custom-animated-tooltip .driver-popover-title {
+  background-color: var(--tooltip-accent);
+  color: white;
+  padding: 1rem;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  animation: title-slide-down 0.4s ease-out;
+}
+
+.custom-animated-tooltip .driver-popover-description {
+  padding: 1rem;
+  line-height: 1.6;
+  color: var(--tooltip-text);
+  animation: content-fade-in 0.5s ease-out 0.2s both;
+}
+
+.custom-animated-tooltip .driver-popover-footer {
+  background-color: #f8f9fa;
+  padding: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  animation: footer-slide-up 0.4s ease-out;
+}
+
+.custom-animated-tooltip .driver-popover-footer button {
+  background-color: var(--tooltip-accent);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.custom-animated-tooltip .driver-popover-footer button:hover {
+  background-color: var(--tooltip-highlight);
+  transform: translateY(-2px);
+}
+
+.custom-animated-tooltip .driver-popover-footer .driver-next-btn {
+  animation: button-pulse 2s infinite;
+}
+
+.custom-animated-tooltip .driver-popover-close-btn {
+  color: white;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.custom-animated-tooltip .driver-popover-close-btn:hover {
+  opacity: 1;
+}
+
+.custom-animated-tooltip .driver-popover-arrow {
+  border-color: var(--tooltip-accent);
+  animation: arrow-pulse 1s ease infinite;
+}
+
+/* Pulse animation for important elements */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--tooltip-accent-rgb), 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--tooltip-accent-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--tooltip-accent-rgb), 0);
+  }
+}
+
+/* Tooltip appearance animation */
+@keyframes tooltip-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Title animation */
+@keyframes title-slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Content animation */
+@keyframes content-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Footer animation */
+@keyframes footer-slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button pulse animation */
+@keyframes button-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Arrow pulse animation */
+@keyframes arrow-pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* Highlight element with pulse animation */
+.driver-highlighted-element {
+  animation: pulse 1.5s ease infinite;
+}
