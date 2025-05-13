@@ -30,22 +30,23 @@ export default function HomePage() {
   });
   
   // Parallax effects: elements move at different speeds while scrolling
-  const imageOneY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const imageTwoY = useTransform(scrollYProgress, [0, 1], [0, -80]);
-  const imageThreeY = useTransform(scrollYProgress, [0, 1], [0, 60]);
+  // Using smaller movement values for better performance
+  const imageOneY = useTransform(scrollYProgress, [0, 1], [0, 60]);
+  const imageTwoY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+  const imageThreeY = useTransform(scrollYProgress, [0, 1], [0, 30]);
   
-  // Peek-a-boo effects: images that reveal as you scroll (with smoother values)
-  const peekOneScale = useTransform(scrollYProgress, [0, 0.3], [0.8, 1]);
-  const peekOneOpacity = useTransform(scrollYProgress, [0, 0.15, 0.3], [0, 0.6, 0.8]);
-  const peekOneRotate = useTransform(scrollYProgress, [0, 0.5], [-5, 5]);
+  // Peek-a-boo effects: images that reveal as you scroll (with more subtle values)
+  const peekOneScale = useTransform(scrollYProgress, [0, 0.3], [0.9, 1]);
+  const peekOneOpacity = useTransform(scrollYProgress, [0, 0.15, 0.3], [0, 0.7, 0.9]);
+  const peekOneRotate = useTransform(scrollYProgress, [0, 0.5], [-3, 3]);
   
-  // Smoothed animations for peek-from-bottom effect with better values
-  const peekTwoY = useTransform(scrollYProgress, [0.2, 0.5], [60, -25]);
-  const peekTwoOpacity = useTransform(scrollYProgress, [0.2, 0.4], [0, 0.9]);
-  const peekTwoScale = useTransform(scrollYProgress, [0.2, 0.5], [0.9, 1.05]);
+  // Smoothed animations for peek-from-bottom effect with smaller motion
+  const peekTwoY = useTransform(scrollYProgress, [0.2, 0.5], [30, -15]);
+  const peekTwoOpacity = useTransform(scrollYProgress, [0.2, 0.4], [0.2, 0.95]);
+  const peekTwoScale = useTransform(scrollYProgress, [0.2, 0.5], [0.95, 1.03]);
   
-  // Animation for element that peeks in from the side (smoother)
-  const peekFromSide = useTransform(scrollYProgress, [0.4, 0.7], [60, -10]);
+  // Animation for element that peeks in from the side (more subtle)
+  const peekFromSide = useTransform(scrollYProgress, [0.4, 0.7], [30, -5]);
   
   // Load sass mode from localStorage only once at component mount
   useEffect(() => {
@@ -373,7 +374,8 @@ export default function HomePage() {
               {/* First feature card with peek-a-boo animation */}
               <motion.div 
                 className="bg-gray-50 p-8 rounded-lg text-center relative z-10 overflow-hidden"
-                whileHover={{ y: -10, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                style={{ boxShadow: "0 4px 6px -2px rgba(0, 0, 0, 0.05)" }}
+                whileHover={{ y: -10 }}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ 
@@ -413,7 +415,8 @@ export default function HomePage() {
               {/* Second feature card */}
               <motion.div 
                 className="bg-gray-50 p-8 rounded-lg text-center relative z-10"
-                whileHover={{ y: -10, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                style={{ boxShadow: "0 4px 6px -2px rgba(0, 0, 0, 0.05)" }}
+                whileHover={{ y: -10 }}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ 
@@ -445,7 +448,8 @@ export default function HomePage() {
               {/* Third feature card with peek-a-boo animation */}
               <motion.div 
                 className="bg-gray-50 p-8 rounded-lg text-center relative z-10 overflow-hidden"
-                whileHover={{ y: -10, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                style={{ boxShadow: "0 4px 6px -2px rgba(0, 0, 0, 0.05)" }}
+                whileHover={{ y: -10 }}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ 
