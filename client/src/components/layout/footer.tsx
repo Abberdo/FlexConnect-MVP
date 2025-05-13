@@ -1,11 +1,23 @@
 import { Link } from "wouter";
 import { useState, useEffect } from "react";
 
-export function Footer() {
+interface FooterProps {
+  sassMode?: boolean;
+  onToggleSassMode?: () => void;
+}
+
+export function Footer({ sassMode, onToggleSassMode }: FooterProps = {}) {
   const [sassyFooterText, setSassyFooterText] = useState(false);
   
   // Check if sass mode is enabled from localStorage or parent component
   useEffect(() => {
+    // If sassMode is provided as a prop, use it
+    if (typeof sassMode !== 'undefined') {
+      setSassyFooterText(sassMode);
+      return;
+    }
+    
+    // Otherwise try to get it from localStorage
     const savedSassMode = localStorage.getItem('sass-mode');
     if (savedSassMode !== null) {
       setSassyFooterText(savedSassMode === 'true');
@@ -21,7 +33,7 @@ export function Footer() {
     return () => {
       window.removeEventListener('sass-mode-toggle' as any, handleSassToggle);
     };
-  }, []);
+  }, [sassMode]);
 
   return (
     <footer className="bg-white">
@@ -101,15 +113,21 @@ export function Footer() {
             data-tutorial="sass-toggle" 
             className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
             onClick={() => {
-              const newSassMode = !sassyFooterText;
-              setSassyFooterText(newSassMode);
-              localStorage.setItem('sass-mode', newSassMode.toString());
-              
-              // Dispatch an event that can be listened to by other components
-              const event = new CustomEvent('sass-mode-toggle', { 
-                detail: { enabled: newSassMode } 
-              });
-              window.dispatchEvent(event);
+              if (onToggleSassMode) {
+                // Use the parent component's toggle function if provided
+                onToggleSassMode();
+              } else {
+                // Otherwise handle it locally
+                const newSassMode = !sassyFooterText;
+                setSassyFooterText(newSassMode);
+                localStorage.setItem('sass-mode', newSassMode.toString());
+                
+                // Dispatch an event that can be listened to by other components
+                const event = new CustomEvent('sass-mode-toggle', { 
+                  detail: { enabled: newSassMode } 
+                });
+                window.dispatchEvent(event);
+              }
             }}
           >
             <div className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${sassyFooterText ? 'bg-secondary' : 'bg-muted'}`}>
