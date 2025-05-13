@@ -26,30 +26,34 @@ export default function HomePage() {
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"]
+    offset: ["start start", "end end"],
+    layoutEffect: false // Use useEffect instead of useLayoutEffect for better performance
   });
   
-  // Create a throttled scroll progress value to improve performance
-  const throttledProgress = useTransform(scrollYProgress, (latest) => Math.round(latest * 50) / 50);
+  // Create a smoother scroll progress value with reduced updates
+  const smoothProgress = useTransform(scrollYProgress, (latest) => {
+    // Round to nearest 2% to reduce jitter and number of updates
+    return Math.round(latest * 50) / 50;
+  });
   
   // Parallax effects: elements move at different speeds while scrolling
   // Using very small values to make it subtle and reduce jank
-  const imageOneY = useTransform(throttledProgress, [0, 1], [0, 30]);
-  const imageTwoY = useTransform(throttledProgress, [0, 1], [0, -20]);
-  const imageThreeY = useTransform(throttledProgress, [0, 1], [0, 15]);
+  const imageOneY = useTransform(smoothProgress, [0, 1], [0, 30]);
+  const imageTwoY = useTransform(smoothProgress, [0, 1], [0, -20]);
+  const imageThreeY = useTransform(smoothProgress, [0, 1], [0, 15]);
   
   // Peek-a-boo effects: images that reveal as you scroll (with minimal values)
-  const peekOneScale = useTransform(throttledProgress, [0, 0.3], [0.95, 1]);
-  const peekOneOpacity = useTransform(throttledProgress, [0, 0.2], [0.3, 0.95]);
-  const peekOneRotate = useTransform(throttledProgress, [0, 0.5], [-2, 2]);
+  const peekOneScale = useTransform(smoothProgress, [0, 0.3], [0.95, 1]);
+  const peekOneOpacity = useTransform(smoothProgress, [0, 0.2], [0.3, 0.95]);
+  const peekOneRotate = useTransform(smoothProgress, [0, 0.5], [-2, 2]);
   
   // Smoothed animations for peek-from-bottom effect with smaller motion
-  const peekTwoY = useTransform(throttledProgress, [0.2, 0.5], [20, -10]);
-  const peekTwoOpacity = useTransform(throttledProgress, [0.2, 0.4], [0.3, 0.9]);
-  const peekTwoScale = useTransform(throttledProgress, [0.2, 0.5], [0.97, 1.02]);
+  const peekTwoY = useTransform(smoothProgress, [0.2, 0.5], [20, -10]);
+  const peekTwoOpacity = useTransform(smoothProgress, [0.2, 0.4], [0.3, 0.9]);
+  const peekTwoScale = useTransform(smoothProgress, [0.2, 0.5], [0.97, 1.02]);
   
   // Animation for element that peeks in from the side (more subtle)
-  const peekFromSide = useTransform(throttledProgress, [0.4, 0.7], [20, -3]);
+  const peekFromSide = useTransform(smoothProgress, [0.4, 0.7], [20, -3]);
   
   // Load sass mode from localStorage only once at component mount
   useEffect(() => {
@@ -138,7 +142,7 @@ export default function HomePage() {
         {/* Abstract shapes that move at different speeds */}
         <motion.div 
           className="absolute top-80 -left-32 w-96 h-96 opacity-10 z-0 overflow-visible"
-          style={{ y: imageTwoY }}
+          style={{ y: imageTwoY, translateZ: 0 }}
         >
           <motion.div 
             className="w-full h-full rounded-full bg-accent"
@@ -150,7 +154,7 @@ export default function HomePage() {
         {/* Peek-a-boo decorative element that slides in from right */}
         <motion.div 
           className="absolute top-1/2 -right-20 w-80 z-10"
-          style={{ x: peekFromSide }}
+          style={{ x: peekFromSide, translateZ: 0 }}
         >
           <motion.div 
             className="bg-gradient-to-r from-secondary to-primary rounded-l-full p-6 shadow-lg"
@@ -167,7 +171,9 @@ export default function HomePage() {
           style={{ 
             y: peekTwoY,
             opacity: peekTwoOpacity,
-            scale: peekTwoScale
+            scale: peekTwoScale,
+            translateZ: 0,
+            willChange: 'transform, opacity'
           }}
         >
           <div className="w-full h-full rounded-tr-full rounded-tl-full bg-primary/30 backdrop-blur-md flex items-center justify-center">
