@@ -5,12 +5,40 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { AuthProvider } from "@/hooks/use-auth";
-import AuthPage from "@/pages/auth-page";
 import { ProtectedRoute } from "@/lib/protected-route";
-import DashboardPage from "@/pages/dashboard-page";
-import HomePage from "@/pages/home-page";
 import { OnboardingProvider } from "@/components/onboarding/onboarding-provider";
 import { WelcomeTutorial } from "@/components/onboarding/welcome-tutorial";
+import { Suspense, lazy } from "react";
+import { Loader2 } from "lucide-react";
+
+// Import page components normally for now - we'll handle lazy loading differently
+import HomePage from "@/pages/home-page";
+import DashboardPage from "@/pages/dashboard-page";
+import AuthPage from "@/pages/auth-page";
+
+// Loading fallback component
+const PageLoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="flex flex-col items-center gap-2 text-primary">
+      <Loader2 className="h-10 w-10 animate-spin" />
+      <p className="text-sm font-medium">Loading content...</p>
+    </div>
+  </div>
+);
+
+// Create lazy loading wrapper component
+function LazyRoute({ component: Component, ...rest }) {
+  return (
+    <Route 
+      {...rest}
+      component={(props) => (
+        <Suspense fallback={<PageLoadingFallback />}>
+          <Component {...props} />
+        </Suspense>
+      )}
+    />
+  );
+}
 
 function Router() {
   return (
