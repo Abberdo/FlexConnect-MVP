@@ -30,21 +30,22 @@ export default function HomePage() {
   });
   
   // Parallax effects: elements move at different speeds while scrolling
-  const imageOneY = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const imageTwoY = useTransform(scrollYProgress, [0, 1], [0, -150]);
-  const imageThreeY = useTransform(scrollYProgress, [0, 1], [0, 100]);
+  const imageOneY = useTransform(scrollYProgress, [0, 1], [0, 120]);
+  const imageTwoY = useTransform(scrollYProgress, [0, 1], [0, -80]);
+  const imageThreeY = useTransform(scrollYProgress, [0, 1], [0, 60]);
   
-  // Peek-a-boo effects: images that reveal as you scroll
-  const peekOneScale = useTransform(scrollYProgress, [0, 0.3], [0.6, 1]);
-  const peekOneOpacity = useTransform(scrollYProgress, [0, 0.2, 0.3], [0, 0.5, 0.8]);
-  const peekOneRotate = useTransform(scrollYProgress, [0, 0.5], [-10, 10]);
+  // Peek-a-boo effects: images that reveal as you scroll (with smoother values)
+  const peekOneScale = useTransform(scrollYProgress, [0, 0.3], [0.8, 1]);
+  const peekOneOpacity = useTransform(scrollYProgress, [0, 0.15, 0.3], [0, 0.6, 0.8]);
+  const peekOneRotate = useTransform(scrollYProgress, [0, 0.5], [-5, 5]);
   
-  const peekTwoY = useTransform(scrollYProgress, [0.2, 0.6], [100, -50]);
-  const peekTwoOpacity = useTransform(scrollYProgress, [0.2, 0.4], [0, 1]);
-  const peekTwoScale = useTransform(scrollYProgress, [0.2, 0.5], [0.8, 1.1]);
+  // Smoothed animations for peek-from-bottom effect with better values
+  const peekTwoY = useTransform(scrollYProgress, [0.2, 0.5], [60, -25]);
+  const peekTwoOpacity = useTransform(scrollYProgress, [0.2, 0.4], [0, 0.9]);
+  const peekTwoScale = useTransform(scrollYProgress, [0.2, 0.5], [0.9, 1.05]);
   
-  // Animation for element that peeks in from the side
-  const peekFromSide = useTransform(scrollYProgress, [0.4, 0.8], [100, -20]);
+  // Animation for element that peeks in from the side (smoother)
+  const peekFromSide = useTransform(scrollYProgress, [0.4, 0.7], [60, -10]);
   
   // Load sass mode from localStorage only once at component mount
   useEffect(() => {

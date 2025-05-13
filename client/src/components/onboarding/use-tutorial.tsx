@@ -33,11 +33,11 @@ export function useTutorial(steps: TutorialStep[], options?: { autoStart?: boole
         setHasCompletedTutorial(true);
       },
       onHighlighted: (element) => {
-        // Ensure the position is set
-        if (element) {
-          const el = document.querySelector(element) as HTMLElement;
+        // Add animation classes if needed
+        if (typeof element === 'string') {
+          const el = document.querySelector(element);
           if (el && window.getComputedStyle(el).position === 'static') {
-            el.style.position = 'relative';
+            (el as HTMLElement).style.position = 'relative';
           }
         }
       },
