@@ -1,13 +1,18 @@
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
-import { CheckCircle, ArrowRight, Coffee, X, Sparkles } from "lucide-react";
 import { motion, useScroll, useTransform, useAnimation, useInView } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import logoBgPath from "@assets/Brand Logo-01.jpeg";
+import { Loader2 } from "lucide-react";
+
+// Import lazy-loaded section components
+import {
+  LazyHeroSection,
+  LazyFeaturesSection,
+  LazyBenefitsSection,
+  LazyCtaSection
+} from "@/components/home/lazy-sections";
 
 export default function HomePage() {
   const [sassMode, setSassMode] = useState(true);
