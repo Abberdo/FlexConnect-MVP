@@ -29,24 +29,27 @@ export default function HomePage() {
     offset: ["start start", "end end"]
   });
   
-  // Parallax effects: elements move at different speeds while scrolling
-  // Using smaller movement values for better performance
-  const imageOneY = useTransform(scrollYProgress, [0, 1], [0, 60]);
-  const imageTwoY = useTransform(scrollYProgress, [0, 1], [0, -40]);
-  const imageThreeY = useTransform(scrollYProgress, [0, 1], [0, 30]);
+  // Create a throttled scroll progress value to improve performance
+  const throttledProgress = useTransform(scrollYProgress, (latest) => Math.round(latest * 50) / 50);
   
-  // Peek-a-boo effects: images that reveal as you scroll (with more subtle values)
-  const peekOneScale = useTransform(scrollYProgress, [0, 0.3], [0.9, 1]);
-  const peekOneOpacity = useTransform(scrollYProgress, [0, 0.15, 0.3], [0, 0.7, 0.9]);
-  const peekOneRotate = useTransform(scrollYProgress, [0, 0.5], [-3, 3]);
+  // Parallax effects: elements move at different speeds while scrolling
+  // Using very small values to make it subtle and reduce jank
+  const imageOneY = useTransform(throttledProgress, [0, 1], [0, 30]);
+  const imageTwoY = useTransform(throttledProgress, [0, 1], [0, -20]);
+  const imageThreeY = useTransform(throttledProgress, [0, 1], [0, 15]);
+  
+  // Peek-a-boo effects: images that reveal as you scroll (with minimal values)
+  const peekOneScale = useTransform(throttledProgress, [0, 0.3], [0.95, 1]);
+  const peekOneOpacity = useTransform(throttledProgress, [0, 0.2], [0.3, 0.95]);
+  const peekOneRotate = useTransform(throttledProgress, [0, 0.5], [-2, 2]);
   
   // Smoothed animations for peek-from-bottom effect with smaller motion
-  const peekTwoY = useTransform(scrollYProgress, [0.2, 0.5], [30, -15]);
-  const peekTwoOpacity = useTransform(scrollYProgress, [0.2, 0.4], [0.2, 0.95]);
-  const peekTwoScale = useTransform(scrollYProgress, [0.2, 0.5], [0.95, 1.03]);
+  const peekTwoY = useTransform(throttledProgress, [0.2, 0.5], [20, -10]);
+  const peekTwoOpacity = useTransform(throttledProgress, [0.2, 0.4], [0.3, 0.9]);
+  const peekTwoScale = useTransform(throttledProgress, [0.2, 0.5], [0.97, 1.02]);
   
   // Animation for element that peeks in from the side (more subtle)
-  const peekFromSide = useTransform(scrollYProgress, [0.4, 0.7], [30, -5]);
+  const peekFromSide = useTransform(throttledProgress, [0.4, 0.7], [20, -3]);
   
   // Load sass mode from localStorage only once at component mount
   useEffect(() => {
@@ -96,7 +99,7 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col relative overflow-hidden" ref={containerRef}>
       <Navbar />
       
-      <main className="flex-1 relative overflow-hidden" style={{ position: 'relative' }}>
+      <main className="flex-1 overflow-hidden" style={{ position: 'relative', willChange: 'transform' }}>
         {/* Sass Mode Toggle */}
         <div className="fixed top-20 right-4 z-50 bg-white/80 backdrop-blur-sm p-3 rounded-lg shadow-md">
           <div className="flex items-center space-x-2">
@@ -181,7 +184,7 @@ export default function HomePage() {
         {/* Original parallax circles with enhanced animations */}
         <motion.div 
           className="absolute bottom-20 right-10 w-48 h-48 opacity-15 z-0"
-          style={{ y: imageThreeY }}
+          style={{ y: imageThreeY, translateZ: 0 }}
         >
           <motion.div 
             className="w-full h-full rounded-full bg-primary"
