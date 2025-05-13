@@ -33,7 +33,13 @@ export function useTutorial(steps: TutorialStep[], options?: { autoStart?: boole
         setHasCompletedTutorial(true);
       },
       onHighlighted: (element) => {
-        // You can add animation classes here if needed
+        // Ensure the position is set
+        if (element) {
+          const el = document.querySelector(element) as HTMLElement;
+          if (el && window.getComputedStyle(el).position === 'static') {
+            el.style.position = 'relative';
+          }
+        }
       },
       showButtons: ['next', 'previous', 'close'],
       nextBtnText: 'Next',
