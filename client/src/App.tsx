@@ -8,10 +8,10 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import { OnboardingProvider } from "@/components/onboarding/onboarding-provider";
 import { WelcomeTutorial } from "@/components/onboarding/welcome-tutorial";
-import { Suspense, lazy } from "react";
+import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
-// Import page components normally for now - we'll handle lazy loading differently
+// Import page components normally
 import HomePage from "@/pages/home-page";
 import DashboardPage from "@/pages/dashboard-page";
 import AuthPage from "@/pages/auth-page";
@@ -25,20 +25,6 @@ const PageLoadingFallback = () => (
     </div>
   </div>
 );
-
-// Create lazy loading wrapper component
-function LazyRoute({ component: Component, ...rest }) {
-  return (
-    <Route 
-      {...rest}
-      component={(props) => (
-        <Suspense fallback={<PageLoadingFallback />}>
-          <Component {...props} />
-        </Suspense>
-      )}
-    />
-  );
-}
 
 function Router() {
   return (

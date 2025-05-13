@@ -4,15 +4,19 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { StatCard } from "@/components/ui/stat-card";
-import { ActivityFeed } from "@/components/dashboard/activity-feed";
-import { TopMatches } from "@/components/dashboard/top-matches";
-import { ActiveProjects } from "@/components/dashboard/active-projects";
-import { JobRecommendations } from "@/components/dashboard/job-recommendations";
 import { Users, Briefcase, CheckCircle, Star, HelpCircle } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { DashboardTutorial, TutorialTrigger } from "@/components/onboarding/dashboard-tutorial";
 import { useEffect } from "react";
+
+// Import lazy loaded components
+import {
+  LazyActivityFeed,
+  LazyTopMatches,
+  LazyActiveProjects,
+  LazyJobRecommendations
+} from "@/components/dashboard/lazy-components";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -211,20 +215,20 @@ export default function DashboardPage() {
           {/* Activity & Matches */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             <div data-tutorial="activity-feed" className="lg:col-span-2">
-              <ActivityFeed activities={activities as any} className="h-full" />
+              <LazyActivityFeed activities={activities as any} className="h-full" />
             </div>
             <div data-tutorial="recommendation-engine">
-              <TopMatches freelancers={topFreelancers} />
+              <LazyTopMatches freelancers={topFreelancers} />
             </div>
           </div>
 
           {/* Active Projects & Job Recommendations */}
           <div className="grid grid-cols-1 gap-8">
             <div data-tutorial="active-projects">
-              <ActiveProjects projects={activeProjects} />
+              <LazyActiveProjects projects={activeProjects} />
             </div>
             <div data-tutorial="job-listings">
-              <JobRecommendations jobs={jobRecommendations} />
+              <LazyJobRecommendations jobs={jobRecommendations} />
             </div>
           </div>
         </div>
