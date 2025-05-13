@@ -91,10 +91,10 @@ export default function HomePage() {
   }, [isBenefitsInView, benefitControls]);
 
   return (
-    <div className="min-h-screen flex flex-col relative" ref={containerRef}>
+    <div className="min-h-screen flex flex-col relative overflow-hidden" ref={containerRef}>
       <Navbar />
       
-      <main className="flex-1 relative overflow-hidden">
+      <main className="flex-1 relative overflow-hidden" style={{ position: 'relative' }}>
         {/* Sass Mode Toggle */}
         <div className="fixed top-20 right-4 z-50 bg-white/80 backdrop-blur-sm p-3 rounded-lg shadow-md">
           <div className="flex items-center space-x-2">
@@ -184,11 +184,8 @@ export default function HomePage() {
           <motion.div 
             className="w-full h-full rounded-full bg-primary"
             animate={{ 
-              boxShadow: [
-                "0 0 0 0 rgba(255,255,255,0)", 
-                "0 0 0 10px rgba(255,255,255,0.1)", 
-                "0 0 0 20px rgba(255,255,255,0)"
-              ] 
+              opacity: [0.7, 1, 0.7],
+              scale: [1, 1.1, 1]
             }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -198,6 +195,7 @@ export default function HomePage() {
         <section 
           ref={heroRef}
           className="bg-gradient-to-r from-primary to-primary/80 text-white relative z-10 overflow-hidden"
+          style={{ position: 'relative' }}
         >
           {/* Peek-a-boo diagonal image container */}
           <motion.div 
@@ -305,6 +303,7 @@ export default function HomePage() {
         <section 
           ref={featuresRef} 
           className="py-16 md:py-24 bg-white relative z-10 overflow-hidden"
+          style={{ position: 'relative' }}
         >
           {/* Peek-a-boo circle elements */}
           <motion.div 
@@ -489,6 +488,7 @@ export default function HomePage() {
         <section 
           ref={benefitsRef} 
           className="py-16 md:py-24 bg-gray-50 relative z-10 overflow-hidden"
+          style={{ position: 'relative' }}
         >
           {/* Peek-a-boo logo element that slides in from bottom */}
           <motion.div 

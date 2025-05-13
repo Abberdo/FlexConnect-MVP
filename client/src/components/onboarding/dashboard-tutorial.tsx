@@ -64,6 +64,7 @@ export function DashboardTutorial() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           className="fixed bottom-4 right-4 z-50"
+          style={{ position: 'fixed' }} // Ensure the position is explicitly set
         >
           <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 max-w-md">
             <h3 className="text-lg font-bold mb-2">New to SASSED?</h3>
